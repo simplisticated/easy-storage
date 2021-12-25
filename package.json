@@ -1,0 +1,33 @@
+{
+    "name": "@russo-programmisto/easy-storage",
+    "version": "1.1.0",
+    "description": "Convenient wrapper that solves known localStorage issues",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "rm -rf dist && tsc",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/russo-programmisto/easy-storage.git"
+    },
+    "author": "Igor Matyushkin",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/russo-programmisto/easy-storage/issues"
+    },
+    "homepage": "https://github.com/russo-programmisto/easy-storage#readme",
+    "keywords": [
+        "localStorage",
+        "sessionStorage",
+        "storage",
+        "store",
+        "realm"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        "@types/node": "^17.0.4",
+        "typescript": "^4.5.4"
+    }
+}
