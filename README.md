@@ -20,11 +20,15 @@ When you use `localStorage`, you can read and write only string values. With thi
 
 Type in Terminal:
 
-`npm install --save @russo-programmisto/easy-storage`
+```
+npm install --save @russo-programmisto/easy-storage
+```
 
 or, if you prefer **yarn** over **npm**, type:
 
-`yarn add @russo-programmisto/easy-storage`
+```
+yarn add @russo-programmisto/easy-storage
+```
 
 Then add import instruction to your code:
 
