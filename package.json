@@ -1,11 +1,12 @@
 {
     "name": "@russo-programmisto/easy-storage",
-    "version": "1.3.0",
+    "version": "2.0",
     "description": "Convenient wrapper that solves known localStorage issues",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "rm -rf dist && tsc",
+        "prepare": "npm run build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -27,7 +28,7 @@
     ],
     "dependencies": {},
     "devDependencies": {
-        "@types/node": "^17.0.4",
-        "typescript": "^4.5.4"
+        "@types/node": "16.7.10",
+        "typescript": "4.5.4"
     }
 }
