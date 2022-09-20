@@ -14,6 +14,8 @@ export default class EasyStorage {
     });
 
     private internalStorage: Storage;
+    
+    public delegate?: StorageDelegate
 
     private constructor(
         settings: {
@@ -127,13 +129,43 @@ export default class EasyStorage {
     }
 
     public remove = (key: string) => {
-        this.internalStorage.removeItem(
-            key
-        );
+        const shouldRemove = this.delegate?.shouldRemoveValue ? this.delegate.shouldRemoveValue(key) : true;
+        
+        if (shouldRemove) {
+            this.internalStorage.removeItem(
+                key
+            );
+        }
     }
 
     public clear() {
-        this.internalStorage.clear();
+        const data = {
+            ...this.internalStorage
+        };
+
+        if (this.delegate?.shouldRemoveValue) {
+            const keys = Object.keys(data);
+
+            for (const key of keys) {
+                const shouldRemove = this.delegate.shouldRemoveValue(
+                    key
+                );
+
+                if (shouldRemove) {
+                    this.internalStorage.removeItem(
+                        key
+                    );
+                }
+            }
+        } else {
+            this.internalStorage.clear();
+        }
+
+        if (this.delegate?.onClear) {
+            this.delegate.onClear(
+                data
+            );
+        }
     }
 
     public updatedOn = (key: string): number | undefined => {
@@ -142,4 +174,19 @@ export default class EasyStorage {
         );
         return item?.updatedOn;
     }
+}
+
+export type OnStorageClearHandler = (
+    removedData: {
+        [id: string]: any
+    }
+) => void
+
+export type ShouldRemoveStorageValueHandler = (
+    key: string
+) => boolean
+
+export interface StorageDelegate {
+    shouldRemoveValue?: ShouldRemoveStorageValueHandler
+    onClear?: OnStorageClearHandler
 }
