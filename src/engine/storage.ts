@@ -86,31 +86,36 @@ export default class EasyStorage {
         }
     }
 
-    public set = (key: string, value: any) => {
-        if (value) {
-            const currentTimestamp = Date.now();
-            const item: LocalItem = {
-                value: value,
-                updatedOn: currentTimestamp,
-                updatedOn_formatted: new Date(currentTimestamp).toString()
-            };
-            const itemJsonString = new ItemSerializer().serialize({
-                item: item,
-                encode: false
-            });
+    public set = (
+        key: string,
+        value: any
+    ): boolean => {
+        const currentTimestamp = Date.now();
+        const item: LocalItem = {
+            value: value,
+            updatedOn: currentTimestamp,
+            updatedOn_formatted: new Date(currentTimestamp).toString()
+        };
+        const itemJsonString = new ItemSerializer().serialize({
+            item: item,
+            encode: false
+        });
+        
+        try {
             this.internalStorage.setItem(
                 key,
                 itemJsonString
             );
-        } else {
-            delete this.internalStorage[key];
+            return true;
+        } catch {
+            return false;
         }
     }
 
     public setRemote = (
         key: string,
         url: string
-    ) => {
+    ): boolean => {
         const currentTimestamp = Date.now();
         const item: RemoteItem = {
             url: url,
@@ -121,10 +126,16 @@ export default class EasyStorage {
             item: item,
             encode: false
         });
-        this.internalStorage.setItem(
-            key,
-            itemJsonString
-        );
+        
+        try {
+            this.internalStorage.setItem(
+                key,
+                itemJsonString
+            );
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     public remove = (key: string) => {
