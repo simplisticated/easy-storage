@@ -7,13 +7,13 @@ export default class EasyStorage {
 
     public static local = new EasyStorage({
         mode: "local"
-    });
+    })
 
     public static session = new EasyStorage({
         mode: "session"
-    });
+    })
 
-    private internalStorage: Storage;
+    private internalStorage: Storage
     
     public listener?: StorageListener
 
@@ -62,35 +62,25 @@ export default class EasyStorage {
         return undefined;
     }
 
-    public getRemote = (
-        key: string,
-        callback: (value: any) => void
-    ) => {
+    public getRemote = async (
+        key: string
+    ): Promise<any> => {
         const item = this.getItem(
             key
         );
 
         if (isRemoteItem(item)) {
-            const remoteItem = item as RemoteItem;
-
-            fetch(remoteItem.url)
-                .then(value => {
-                    return value.json();
-                })
-                .then(json => {
-                    callback(
-                        json
-                    );
-                })
-                .catch(() => {
-                    callback(
-                        undefined
-                    );
-                });
+            try {
+                const response = await fetch(
+                    item.url
+                );
+                const json = await response.json();
+                return json;
+            } catch {
+                return undefined;
+            }
         } else {
-            callback(
-                undefined
-            );
+            return undefined;
         }
     }
 
@@ -111,7 +101,10 @@ export default class EasyStorage {
         );
     }
 
-    public setRemote = (key: string, url: string) => {
+    public setRemote = (
+        key: string,
+        url: string
+    ) => {
         const currentTimestamp = Date.now();
         const item: RemoteItem = {
             url: url,
