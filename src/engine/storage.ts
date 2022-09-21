@@ -2,6 +2,8 @@ import { BaseItem, isBaseItem } from "../models/base-item";
 import { isLocalItem, LocalItem } from "../models/local-item";
 import { isRemoteItem, RemoteItem } from "../models/remote-item";
 import ItemSerializer from "../serializers/item-serializer";
+import sizeOf from "object-sizeof";
+import sizeof from "object-sizeof";
 
 export default class EasyStorage {
 
@@ -14,7 +16,7 @@ export default class EasyStorage {
     })
 
     private internalStorage: Storage
-    
+
     public listener?: StorageListener
 
     private constructor(
@@ -85,20 +87,24 @@ export default class EasyStorage {
     }
 
     public set = (key: string, value: any) => {
-        const currentTimestamp = Date.now();
-        const item: LocalItem = {
-            value: value,
-            updatedOn: currentTimestamp,
-            updatedOn_formatted: new Date(currentTimestamp).toString()
-        };
-        const itemJsonString = new ItemSerializer().serialize({
-            item: item,
-            encode: false
-        });
-        this.internalStorage.setItem(
-            key,
-            itemJsonString
-        );
+        if (value) {
+            const currentTimestamp = Date.now();
+            const item: LocalItem = {
+                value: value,
+                updatedOn: currentTimestamp,
+                updatedOn_formatted: new Date(currentTimestamp).toString()
+            };
+            const itemJsonString = new ItemSerializer().serialize({
+                item: item,
+                encode: false
+            });
+            this.internalStorage.setItem(
+                key,
+                itemJsonString
+            );
+        } else {
+            delete this.internalStorage[key];
+        }
     }
 
     public setRemote = (
@@ -123,7 +129,7 @@ export default class EasyStorage {
 
     public remove = (key: string) => {
         const shouldRemove = this.listener?.shouldRemoveValue ? this.listener.shouldRemoveValue(key) : true;
-        
+
         if (shouldRemove) {
             this.internalStorage.removeItem(
                 key
@@ -166,6 +172,19 @@ export default class EasyStorage {
             key
         );
         return item?.updatedOn;
+    }
+
+    public getSize = () => {
+        try {
+            const data = {
+                ...this.internalStorage
+            };
+            return sizeof(
+                data
+            );
+        } catch {
+            return 0;
+        }
     }
 }
 
