@@ -1,7 +1,7 @@
 import { BaseItem, isBaseItem } from "./base-item";
 
 export interface LocalItem extends BaseItem {
-    value: any
+    value?: any
 }
 
 export const isLocalItem = (obj: any): obj is LocalItem => {
@@ -11,6 +11,6 @@ export const isLocalItem = (obj: any): obj is LocalItem => {
         ];
         return !requirements.includes(false);
     } else {
-        return true;
+        return false;
     }
 }
