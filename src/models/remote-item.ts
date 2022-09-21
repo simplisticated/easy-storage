@@ -4,10 +4,13 @@ export interface RemoteItem extends BaseItem {
     url: string
 }
 
-export const isRemoteItem = (object: any): object is RemoteItem => {
-    if (typeof object === "object") {
-        return "url" in object;
+export const isRemoteItem = (obj: any): obj is RemoteItem => {
+    if (typeof obj === "object") {
+        const requirements = [
+            typeof obj["url"] === "string"
+        ];
+        return !requirements.includes(false);
+    } else {
+        return false;
     }
-
-    return false;
 }
