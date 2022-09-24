@@ -2,40 +2,29 @@ import { BaseItem, isBaseItem } from "../models/base-item";
 import { isLocalItem, LocalItem } from "../models/local-item";
 import { isRemoteItem, RemoteItem } from "../models/remote-item";
 import ItemSerializer from "../serializers/item-serializer";
-import sizeOf from "object-sizeof";
 import sizeof from "object-sizeof";
 
 export default class EasyStorage {
 
     public static local = new EasyStorage({
-        mode: "local"
+        storage: localStorage
     })
 
     public static session = new EasyStorage({
-        mode: "session"
+        storage: sessionStorage
     })
-
-    private internalStorage: Storage
 
     public listener?: StorageListener
 
-    private constructor(
-        settings: {
-            mode: "local" | "session"
+    constructor(
+        private configuration: {
+            storage: Storage
         }
     ) {
-        this.internalStorage = (() => {
-            switch (settings.mode) {
-                case "local":
-                    return localStorage;
-                case "session":
-                    return sessionStorage;
-            }
-        })();
     }
 
-    private getItem = (key: string): BaseItem | undefined => {
-        const stringValue = this.internalStorage.getItem(
+    private readItem = (key: string): BaseItem | undefined => {
+        const stringValue = this.configuration.storage.getItem(
             key
         );
 
@@ -52,8 +41,28 @@ export default class EasyStorage {
         return undefined;
     }
 
+    private writeItem = (key: string, item: BaseItem): boolean => {
+        const currentTimestamp = Date.now();
+        item.updatedOn = currentTimestamp;
+        item.updatedOn_formatted = new Date(currentTimestamp).toString();
+        const itemJsonString = new ItemSerializer().serialize({
+            item: item,
+            encode: false
+        });
+        
+        try {
+            this.configuration.storage.setItem(
+                key,
+                itemJsonString
+            );
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
     public get = (key: string): any => {
-        const item = this.getItem(
+        const item = this.readItem(
             key
         );
 
@@ -67,7 +76,7 @@ export default class EasyStorage {
     public getRemote = async (
         key: string
     ): Promise<any> => {
-        const item = this.getItem(
+        const item = this.readItem(
             key
         );
 
@@ -90,59 +99,33 @@ export default class EasyStorage {
         key: string,
         value: any
     ): boolean => {
-        const currentTimestamp = Date.now();
         const item: LocalItem = {
-            value: value,
-            updatedOn: currentTimestamp,
-            updatedOn_formatted: new Date(currentTimestamp).toString()
+            value
         };
-        const itemJsonString = new ItemSerializer().serialize({
-            item: item,
-            encode: false
-        });
-        
-        try {
-            this.internalStorage.setItem(
-                key,
-                itemJsonString
-            );
-            return true;
-        } catch {
-            return false;
-        }
+        return this.writeItem(
+            key,
+            item
+        );
     }
 
     public setRemote = (
         key: string,
         url: string
     ): boolean => {
-        const currentTimestamp = Date.now();
         const item: RemoteItem = {
-            url: url,
-            updatedOn: currentTimestamp,
-            updatedOn_formatted: new Date(currentTimestamp).toString()
+            url
         };
-        const itemJsonString = new ItemSerializer().serialize({
-            item: item,
-            encode: false
-        });
-        
-        try {
-            this.internalStorage.setItem(
-                key,
-                itemJsonString
-            );
-            return true;
-        } catch {
-            return false;
-        }
+        return this.writeItem(
+            key,
+            item
+        );
     }
 
     public remove = (key: string) => {
         const shouldRemove = this.listener?.shouldRemoveValue ? this.listener.shouldRemoveValue(key) : true;
 
         if (shouldRemove) {
-            this.internalStorage.removeItem(
+            this.configuration.storage.removeItem(
                 key
             );
         }
@@ -150,7 +133,7 @@ export default class EasyStorage {
 
     public clear() {
         const data = {
-            ...this.internalStorage
+            ...this.configuration.storage
         };
 
         if (this.listener?.shouldRemoveValue) {
@@ -162,13 +145,13 @@ export default class EasyStorage {
                 );
 
                 if (shouldRemove) {
-                    this.internalStorage.removeItem(
+                    this.configuration.storage.removeItem(
                         key
                     );
                 }
             }
         } else {
-            this.internalStorage.clear();
+            this.configuration.storage.clear();
         }
 
         if (this.listener?.onClear) {
@@ -179,7 +162,7 @@ export default class EasyStorage {
     }
 
     public updatedOn = (key: string): number | undefined => {
-        const item = this.getItem(
+        const item = this.readItem(
             key
         );
         return item?.updatedOn;
@@ -188,7 +171,7 @@ export default class EasyStorage {
     public getSize = () => {
         try {
             const data = {
-                ...this.internalStorage
+                ...this.configuration.storage
             };
             return sizeof(
                 data
