@@ -1,6 +1,6 @@
 {
     "name": "@russo-programmisto/easy-storage",
-    "version": "2.1.7",
+    "version": "2.1.8",
     "description": "Convenient wrapper that solves known localStorage issues",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
