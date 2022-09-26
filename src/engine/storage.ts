@@ -7,7 +7,7 @@ import sizeof from "object-sizeof";
 export default class EasyStorage {
 
     public static local = (() => {
-        if (window.localStorage) {
+        if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
             return new EasyStorage({
                 storage: window.localStorage
             });
@@ -15,7 +15,7 @@ export default class EasyStorage {
     })()!
 
     public static session = (() => {
-        if (window.sessionStorage) {
+        if (typeof window !== "undefined" && typeof window.sessionStorage !== "undefined") {
             return new EasyStorage({
                 storage: window.sessionStorage
             });
