@@ -6,13 +6,21 @@ import sizeof from "object-sizeof";
 
 export default class EasyStorage {
 
-    public static local = new EasyStorage({
-        storage: localStorage
-    })
+    public static local = (() => {
+        if (window.localStorage) {
+            return new EasyStorage({
+                storage: window.localStorage
+            });
+        }
+    })()!
 
-    public static session = new EasyStorage({
-        storage: sessionStorage
-    })
+    public static session = (() => {
+        if (window.sessionStorage) {
+            return new EasyStorage({
+                storage: window.sessionStorage
+            });
+        }
+    })()!
 
     public listener?: StorageListener
 
