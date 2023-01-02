@@ -21,19 +21,19 @@ When you use `localStorage`, you can read and write only string values. With thi
 Type in Terminal:
 
 ```
-npm install --save @russo-programmisto/easy-storage
+npm install --save @simplisticated/easy-storage
 ```
 
 or, if you prefer **yarn** over **npm**, type:
 
 ```
-yarn add @russo-programmisto/easy-storage
+yarn add @simplisticated/easy-storage
 ```
 
 Then add import instruction to your code:
 
 ```typescript
-import { S } from '@russo-programmisto/easy-storage'
+import { S } from '@simplisticated/easy-storage'
 ```
 
 ## Requirements
