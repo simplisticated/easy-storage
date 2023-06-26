@@ -1,13 +1,11 @@
 export interface BaseItem {
-    updatedOn?: number,
-    updatedOn_formatted?: string
+    updatedOn?: number
 }
 
 export const isBaseItem = (obj: any): obj is BaseItem => {
-    if (typeof obj === "object") {
+    if (typeof obj === "object" && obj !== null && !Array.isArray(obj)) {
         const requirements = [
-            "updatedOn" in obj ? typeof obj["updatedOn"] === "number" : true,
-            "updatedOn_formatted" in obj ? typeof obj["updatedOn_formatted"] === "string" : true
+            "updatedOn" in obj ? typeof obj["updatedOn"] === "number" : true
         ];
         return !requirements.includes(false);
     } else {

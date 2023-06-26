@@ -52,7 +52,6 @@ export default class EasyStorage {
     private writeItem = (key: string, item: BaseItem): boolean => {
         const currentTimestamp = Date.now();
         item.updatedOn = currentTimestamp;
-        item.updatedOn_formatted = new Date(currentTimestamp).toString();
         const itemJsonString = new ItemSerializer().serialize({
             item: item,
             encode: false
