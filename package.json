@@ -1,6 +1,6 @@
 {
     "name": "@simplisticated/easy-storage",
-    "version": "3.0.1",
+    "version": "3.0.2",
     "description": "Convenient wrapper that solves known localStorage issues",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -10,14 +10,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/russo-programmisto/easy-storage.git"
+        "url": "https://github.com/simplisticated/easy-storage.git"
     },
     "author": "Igor Matyushkin",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/russo-programmisto/easy-storage/issues"
+        "url": "https://github.com/simplisticated/easy-storage/issues"
     },
-    "homepage": "https://github.com/russo-programmisto/easy-storage#readme",
+    "homepage": "https://github.com/simplisticated/easy-storage#readme",
     "keywords": [
         "localStorage",
         "sessionStorage",
